@@ -11,7 +11,6 @@ root.render(
   </React.StrictMode>
 );
 //i am razi
-//i am Faisal
 //i am ward and razi
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
