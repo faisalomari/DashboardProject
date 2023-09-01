@@ -1,3 +1,3 @@
 backend/node_modules
-backend/package
-backend/package-lock
+backend/package-lock.json
+backend/package.json
