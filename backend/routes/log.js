@@ -2,13 +2,19 @@ var express = require('express');
 var router = express.Router();
 var logdb = require('../models/logdb');
 const { log } = require('util');
+const backFuncs=require('../backFuncs');
 
 router.post('/', function(req, res){
     logdb.insertMany([
         {file_name: 1 ,  user_name: '1', file_date:'2023-09-02T18:16:07.093Z' ,process : [
             {
               rule: 'Application Events',
-              rank: 'low',
+              rank: 2,
+              message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '1/9/2023'
+            },{
+              rule: 'fatal',
+              rank: 1,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '1/9/2023'
             }
@@ -29,40 +35,19 @@ router.post('/', function(req, res){
 });
 
 router.get('/start' , async function(req,res){
-    let start=[];
     let result =await logdb.find({}).exec(); /*retrieving all the files details fron the database*/
-
     /*retrieving all files names from the result*/ 
     fileNames=result.map((data) => data["file_name"]);
-    /*********************************************/
-
-    /*retrieving all the rules*/
-    let rulesNames=new Set();
-    for(let i=0;i<result.length;i++){
-        for(let j=0;j<result[i]["process"].length;j++){
-            rulesNames.add(result[i]["process"][j]["rule"]);
-        }
-    }
-    /*************************/
-
-    start[0]=fileNames;
-    start[1]=Array.from(rulesNames);
-    start=JSON.parse(JSON.stringify(start));
-    res.json(start);
-    console.log(start);
+    res.json(fileNames);
+    console.log(fileNames);
 });
 
-router.get('/init',  function(req,res){
-    logdb.find()
-  .sort({ file_date: -1 }) 
-  .exec((err, documents) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(documents[0]);
-    res.send(documents[0]["process"][0]);
-  });
-
+router.get('/init', async function(req,res){
+    let result= await logdb.find().sort({ file_date: -1 }) .exec();
+    let dataToFront={};
+    dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
+    dataToFront["numberOfFatal"]=backFuncs.numbersFunc(result[0],"fatal");
+    dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
+    res.json(dataToFront);
 });
  module.exports = router;
