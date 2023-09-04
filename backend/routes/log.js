@@ -9,19 +9,19 @@ router.post('/', function(req, res){
         {file_name: 1 ,  user_name: '1', file_date:'2023-09-02T18:16:07.093Z' ,process : [
             {
               rule: 'Application Events',
-              rank: 2,
+              rank: 3,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '1/9/2023'
             },{
               rule: 'fatal',
-              rank: 1,
+              rank: 3,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '1/9/2023'
             }
           ]},{file_name: 2 ,  user_name: '2', file_date:'2023-09-01T18:16:07.093Z' ,process : [
             {
               rule: 'Application Events',
-              rank: 'low',
+              rank: 3,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '30/8/2023'
             }
@@ -49,11 +49,10 @@ router.get('/init', async function(req,res){
     let result= await logdb.find().sort({ file_date: -1 }) .exec();
     let dataToFront={};
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
-    dataToFront["numberOfFatal"]=backFuncs.numbersFunc(result[0],"fatal");
+    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error");
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
-    const fileRules= new Set();
-    result[0]["process"].map((data) => (fileRules.add(data["rule"])));
-    dataToFront["fileRules"]=Array.from(fileRules);
+    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0]);
+    console.log(dataToFront["rulesCounters"]);
     res.json(dataToFront);
 });
  module.exports = router;
