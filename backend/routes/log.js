@@ -11,19 +11,39 @@ router.post('/', function(req, res){
               rule: 'Application Events',
               rank: 3,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '1/9/2023'
+              date: '2023-09-02T18:00:00.093+00:00'
             },{
-              rule: 'fatal',
+              rule: 'Error',
               rank: 3,
-              message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '1/9/2023'
-            }
-          ]},{file_name: 2 ,  user_name: '2', file_date:'2023-09-01T18:16:07.093Z' ,process : [
-            {
+              message: 'FATAL [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '2023-09-02T18:15:01.093+00:00'
+            },{
+              rule: 'Error',
+              rank: 2,
+              message: 'EXECPTION [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '2023-09-02T18:30:01.093+00:00'
+            },{
               rule: 'Application Events',
               rank: 3,
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '30/8/2023'
+              date: '2023-09-02T18:45:01.093+00:00'
+            },{
+              rule: 'Warning',
+              rank: 3,
+              message: 'warn [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '2023-09-02T18:55:01.093+00:00'
+            },{
+              rule: 'All',
+              rank: 3,
+              message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '2023-09-02T19:00:01.093+00:00'
+            }
+          ]},{file_name: 2 ,  user_name: '2', file_date:'2023-09-01T18:16:07.093Z' ,process : [
+            {
+              rule: 'ALL',
+              rank: 3,
+              message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
+              date: '2023-09-02T19:10:01.093+00:00'
             }
           ]}
     ]).then(function(){
@@ -51,10 +71,10 @@ router.get('/init', async function(req,res){
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
     dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error");
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
-    let arr=[];
-    arr[0]="fatal";
-
-    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0],"1/9/2023","1/9/2023",arr);
+    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0]);
+    dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0]);
+    dataToFront["LevelsCounters"]=backFuncs.topLevels(result[0]);
+    dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15);
     res.json(dataToFront);
 });
  module.exports = router;
