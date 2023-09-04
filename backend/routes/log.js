@@ -51,8 +51,10 @@ router.get('/init', async function(req,res){
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
     dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error");
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
-    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0]);
-    console.log(dataToFront["rulesCounters"]);
+    let arr=[];
+    arr[0]="fatal";
+
+    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0],"1/9/2023","1/9/2023",arr);
     res.json(dataToFront);
 });
  module.exports = router;
