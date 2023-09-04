@@ -38,8 +38,11 @@ router.get('/start' , async function(req,res){
     let result =await logdb.find({}).exec(); /*retrieving all the files details fron the database*/
     /*retrieving all files names from the result*/ 
     fileNames=result.map((data) => data["file_name"]);
-    res.json(fileNames);
-    console.log(fileNames);
+    let filesRules = new Set();
+    result.map((data) => (data["process"].map((data1)=>(filesRules.add(data1["rule"])))));
+    let dataToFront={};
+    dataToFront["filesNames"]=fileNames;dataToFront["filesRules"]=Array.from(filesRules);
+    res.json(dataToFront);
 });
 
 router.get('/init', async function(req,res){
@@ -48,6 +51,9 @@ router.get('/init', async function(req,res){
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
     dataToFront["numberOfFatal"]=backFuncs.numbersFunc(result[0],"fatal");
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
+    const fileRules= new Set();
+    result[0]["process"].map((data) => (fileRules.add(data["rule"])));
+    dataToFront["fileRules"]=Array.from(fileRules);
     res.json(dataToFront);
 });
  module.exports = router;
