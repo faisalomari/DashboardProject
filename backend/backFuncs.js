@@ -103,18 +103,26 @@ exports.topLevels= function(fileDetails,from,to,rules){
 exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
   let rulesSet;
   if(rules!=undefined)rulesSet=new Set(rules);
-  if(from==undefined && to==undefined){
-    let min = new Date(fileDetails["process"][0]["date"]);
-    let max = new Date(fileDetails["process"][0]["date"]);
-
+  if (from === undefined && to === undefined) {
+    let minDate = new Date(fileDetails["process"][0]["date"]);
+    let maxDate = new Date(fileDetails["process"][0]["date"]);
+  
     for (let i = 1; i < fileDetails["process"].length; i++) {
       let currDate = new Date(fileDetails["process"][i]["date"]);
-      if (currDate > max) {max = currDate;}
-      if (currDate < min) { min = currDate; }
+      if (currDate > maxDate) {
+        maxDate = currDate;
+      }
+      if (currDate < minDate) {
+        minDate = currDate;
+      }
     }
-    from=min;to=max;
+    from = new Date(Date.parse(minDate));
+    to = new Date(Date.parse(maxDate));
   }
-  from=Date.parse(from);to=Date.parse(to);
+  else{
+    from=new Date(Date.parse(from));
+    to=new Date(Date.parse(to));
+  }
   let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
   minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
   minutesBetweenFromTo=minutesBetweenFromTo/minutes;
@@ -122,8 +130,83 @@ exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
   let arr=new Array(size);arr.fill(0);
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
-    if(rules===undefined || (rulesSet.has(data["rule"]) && data["date"]>=from && data["date"]<=to)){
+    let dateOfData=new Date(data["date"]);
+    if(rules===undefined || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to)){
       arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
+    }
+  }
+  return arr;
+}
+
+exports.divideRuleByXMin =function(fileDetails,minutes,rule,from,to){
+  if (from === undefined && to === undefined) {
+    let minDate = new Date(fileDetails["process"][0]["date"]);
+    let maxDate = new Date(fileDetails["process"][0]["date"]);
+  
+    for (let i = 1; i < fileDetails["process"].length; i++) {
+      let currDate = new Date(fileDetails["process"][i]["date"]);
+      if (currDate > maxDate) {
+        maxDate = currDate;
+      }
+      if (currDate < minDate) {
+        minDate = currDate;
+      }
+    }
+    from = new Date(Date.parse(minDate));
+    to = new Date(Date.parse(maxDate));
+  }
+  else{
+    from=new Date(Date.parse(from));
+    to=new Date(Date.parse(to));
+  }
+  let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
+  minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
+  minutesBetweenFromTo=minutesBetweenFromTo/minutes;
+  let size = minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
+  let arr=new Array(size);arr.fill(0);
+  for(let i=0;i<fileDetails["process"].length;i++){
+    let data=fileDetails["process"][i];
+    let dateOfData=new Date(data["date"]);
+    if(data["rule"]===rule && dateOfData>=from && dateOfData<=to){
+      arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
+    }
+  }
+  return arr;
+}
+
+exports.divideRankByXMin =function(fileDetails,minutes,rank,from,to,rules){
+  let rulesSet;
+  if(rules!=undefined)rulesSet=new Set(rules);
+  if (from === undefined && to === undefined) {
+    let minDate = new Date(fileDetails["process"][0]["date"]);
+    let maxDate = new Date(fileDetails["process"][0]["date"]);
+  
+    for (let i = 1; i < fileDetails["process"].length; i++) {
+      let currDate = new Date(fileDetails["process"][i]["date"]);
+      if (currDate > maxDate) {
+        maxDate = currDate;
+      }
+      if (currDate < minDate) {
+        minDate = currDate;
+      }
+    }
+    from = new Date(Date.parse(minDate));
+    to = new Date(Date.parse(maxDate));
+  }
+  else{
+    from=new Date(Date.parse(from));
+    to=new Date(Date.parse(to));
+  }
+  let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
+  minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
+  minutesBetweenFromTo=minutesBetweenFromTo/minutes;
+  let size = minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
+  let arr=new Array(size);arr.fill(0);
+  for(let i=0;i<fileDetails["process"].length;i++){
+    let data=fileDetails["process"][i];
+    let dateOfData=new Date(data["date"]);
+    if( data["rank"]==rank && ((rules===undefined) || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to) )){
+        arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++; 
     }
   }
   return arr;

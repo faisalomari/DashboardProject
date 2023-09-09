@@ -75,6 +75,8 @@ router.get('/init', async function(req,res){
     dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0]);
     dataToFront["LevelsCounters"]=backFuncs.topLevels(result[0]);
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15);
+    dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
+    dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3);
     res.json(dataToFront);
 });
  module.exports = router;
