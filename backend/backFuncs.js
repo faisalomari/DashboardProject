@@ -70,36 +70,6 @@ exports.messagesFilterBaseOnRank = function(fileDetails,from,to,rules){
   }
   return [{"low":rankCounters[0]},{"medium":rankCounters[1]},{"high":rankCounters[2]}];
 }
-
-function getLevel(message){
-  let i=0;
-  while(message[i++]!=" ");
-  return message.substring(0,i);
-}
-
-exports.topLevels= function(fileDetails,from,to,rules){
-  levels={};
-
-  if(rules!=undefined)rulesSet=new Set(rules);
-  if(rules==undefined){
-    fileDetails["process"].map((data)=>( 
-      levels[`${getLevel(data["message"])}`] = levels[`${getLevel(data["message"])}`]==undefined ? 1 : levels[`${getLevel(data["message"])}`]+1));
-  }
-  else{
-    for(let i=0;i<fileDetails["process"].length;i++){
-      let data=fileDetails["process"][i];
-      if(rulesSet.has(data["rule"]) && data["date"]>=from && data["date"] <=to ){
-        levels[`${getLevel(data["message"])}`] = levels[`${getLevel(data["message"])}`]==undefined ? 1 : levels[`${getLevel(data["message"])}`]+1;
-      }
-    }
-  }
-  levels = Object.keys(levels).map((name) => ({
-    [name]: levels[name],
-  }));
-  levels.sort((a,b)=>(Object.values(b)[0]-Object.values(a)[0]));
-
-  return levels;
-}
 exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
   let rulesSet;
   if(rules!=undefined)rulesSet=new Set(rules);
