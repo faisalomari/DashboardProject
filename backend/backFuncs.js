@@ -1,30 +1,31 @@
 const { object } = require("webidl-conversions");
 
-exports.numbersFunc = function (fileDetails,type,from,to){
-    let count=0;
+exports.numbersFunc = function (fileDetails,type,from,to,rules){
+    let rulesSet=undefined;
+  if(rules!==undefined)rulesSet=new Set(rules);
     switch(type){
       case "messages":{
         if(from==undefined && to==undefined){
           return fileDetails["process"].length;
         }
         else{
-          return fileDetails["process"].reduce((total,current)=>(total+(current["date"] >=from && current["date"]<=to) ? 1 : 0 ),0);
+          return fileDetails["process"].reduce((total,current)=>(total+=(current["date"] >=from && current["date"]<=to && rulesSet.has(current["rule"])) ? 1 : 0 ),0);
         }
       }
-      case  "error":{
-        if(from==undefined && to==undefined){
-          return fileDetails["process"].reduce((total,current)=>(total+ (current["rule"].toLowerCase()=="error") ? 1 : 0),0);
+      case  "Error":{
+        if(from===undefined && to===undefined){
+          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error") ? 1 : 0)),0);
         }
         else{
-          return fileDetails["process"].reduce((total,current)=>(total+ (current["date"] >=from && current["date"]<=to && current["rule"]=="error") ? 1 : 0),0);
+          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error" && current["date"]>=from && current["date"]<=to) ? 1 : 0)),0);
         }
       }
       case "high":{
         if(from==undefined && to==undefined){
-          return fileDetails["process"].reduce((total,current)=>(total+ (current["rank"]==3) ? 1 : 0),0);
+          return fileDetails["process"].reduce((total,current)=>(total+= (current["rank"]==3) ? 1 : 0),0);
         }
         else{
-          return fileDetails["process"].reduce((total,current)=>(total+(current["date"] >=from && current["date"]<=to && current["rank"]==3) ? 1 : 0),0);
+          return fileDetails["process"].reduce((total,current)=>(total+=(current["date"] >=from && current["date"]<=to && current["rank"]==3 && rulesSet.has(current["rule"])) ? 1 : 0),0);
         }
       }
     }
@@ -55,18 +56,13 @@ exports.messagesFilterBaseOnRule = function(fileDetails,from,to,rules){
 
 exports.messagesFilterBaseOnRank = function(fileDetails,from,to,rules){
   let rankCounters=[0,0,0];
+  let rulesSet;
   if(rules!=undefined)rulesSet=new Set(rules);
   if(rules==undefined){
-    fileDetails["process"].map((data)=>( 
-      rankCounters[data["rank"]-1]++));
+    fileDetails["process"].map((data)=>( rankCounters[data["rank"]-1]++));
   }
   else{
-    for(let i=0;i<fileDetails["process"].length;i++){
-      let data=fileDetails["process"][i];
-      if(rulesSet.has(data["rule"]) && data["date"]>=from && data["date"] <=to ){
-        rankCounters[data["rank"]-1]++;
-      }
-    }
+    fileDetails["process"].map((data) => (rankCounters[data["rank"]-1] += rulesSet.has(data["rule"]) && data["date"]>=from && data["date"] <=to ? 1 : 0 ));
   }
   return [{"low":rankCounters[0]},{"medium":rankCounters[1]},{"high":rankCounters[2]}];
 }

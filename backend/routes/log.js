@@ -69,14 +69,28 @@ router.get('/init', async function(req,res){
     let result= await logdb.find().sort({ file_date: -1 }) .exec();
     let dataToFront={};
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
-    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error");
+    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"Error");
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
     dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0]);
     dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0]);
-    dataToFront["LevelsCounters"]=backFuncs.topLevels(result[0]);
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15);
     dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3);
     res.json(dataToFront);
 });
+router.get('/filter', async function(req,res){
+  let dataFromFront=req.body;
+  let result= await logdb.find({ file_name: dataFromFront.file_name}).exec();
+    let dataToFront={};
+    dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"Error",dataFromFront.from,dataFromFront.to);
+    dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0],dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0],dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
+    dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    res.json(dataToFront);
+});
+
  module.exports = router;
