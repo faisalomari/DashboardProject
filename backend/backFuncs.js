@@ -96,7 +96,7 @@ exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
   let arr=new Array(size);arr.fill(0);
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
-    let dateOfData=new Date(data["date"]);
+    let dateOfData=Date.parse(new Date(data["date"]));
     if(rules===undefined || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to)){
       arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
     }
@@ -129,10 +129,11 @@ exports.divideRuleByXMin =function(fileDetails,minutes,rule,from,to){
   minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
   minutesBetweenFromTo=minutesBetweenFromTo/minutes;
   let size = minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
-  let arr=new Array(size);arr.fill(0);
+  let arr=new Array(size);
+  arr.fill(0);
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
-    let dateOfData=new Date(data["date"]);
+    let dateOfData=Date.parse(new Date(data["date"]));
     if(data["rule"]===rule && dateOfData>=from && dateOfData<=to){
       arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
     }
@@ -170,8 +171,8 @@ exports.divideRankByXMin =function(fileDetails,minutes,rank,from,to,rules){
   let arr=new Array(size);arr.fill(0);
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
-    let dateOfData=new Date(data["date"]);
-    if( data["rank"]==rank && ((rules===undefined) || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to) )){
+    let dateOfData=Date.parse(new Date(data["date"]));
+    if( data["rank"]===rank && ((rules===undefined) || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to) )){
         arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++; 
     }
   }

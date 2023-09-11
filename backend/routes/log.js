@@ -28,19 +28,19 @@ router.post('/', function(req, res){
               message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '2023-09-02T18:45:01.093+00:00'
             },{
-              rule: 'Warning',
-              rank: 3,
+              rule: 'Error',
+              rank: 2,
               message: 'warn [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '2023-09-02T18:55:01.093+00:00'
             },{
-              rule: 'All',
+              rule: 'Error',
               rank: 3,
               message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '2023-09-02T19:00:01.093+00:00'
             }
           ]},{file_name: 2 ,  user_name: '2', file_date:'2023-09-01T18:16:07.093Z' ,process : [
             {
-              rule: 'ALL',
+              rule: 'Error',
               rank: 3,
               message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
               date: '2023-09-02T19:10:01.093+00:00'
