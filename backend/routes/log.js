@@ -54,14 +54,26 @@ router.post('/', function(req, res){
     });
 });
 
-router.get('/start' , async function(req,res){
-    let result =await logdb.find({}).exec(); /*retrieving all the files details fron the database*/
-    /*retrieving all files names from the result*/ 
-    fileNames=result.map((data) => data["file_name"]);
-    let filesRules = new Set();
+router.get('/' , async function(req,res){
+    let result =await logdb.find({}).exec();
+    let fileNames=[],dataToFront={},filesRules = new Set();
+
     result.map((data) => (data["process"].map((data1)=>(filesRules.add(data1["rule"])))));
-    let dataToFront={};
-    dataToFront["filesNames"]=fileNames;dataToFront["filesRules"]=Array.from(filesRules);
+    filesRules=Array.from(filesRules);
+    console.log(filesRules.indexOf("Error"));
+
+    result.map((file) => {
+      let rulesIdx="";
+      file["process"].map((msg) => {
+        const ind=filesRules.indexOf(msg["rule"]);
+        if(!rulesIdx.includes(ind)){
+          rulesIdx+=ind;
+        }
+      })
+      fileNames.push({"fileName":file["file_name"],"rules":rulesIdx});
+    });
+    dataToFront["files"]=fileNames;
+    dataToFront["rules"]=filesRules;
     res.json(dataToFront);
 });
 
