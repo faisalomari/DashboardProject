@@ -60,7 +60,6 @@ router.get('/' , async function(req,res){
 
     result.map((data) => (data["process"].map((data1)=>(filesRules.add(data1["rule"])))));
     filesRules=Array.from(filesRules);
-    console.log(filesRules.indexOf("Error"));
 
     result.map((file) => {
       let rulesIdx="";
@@ -72,6 +71,7 @@ router.get('/' , async function(req,res){
       })
       fileNames.push({"fileName":file["file_name"],"rules":rulesIdx});
     });
+
     dataToFront["files"]=fileNames;
     dataToFront["rules"]=filesRules;
     res.json(dataToFront);
