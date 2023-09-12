@@ -9,7 +9,7 @@ function PieChart({rulesCounters}){
         theme: "dark1", // "light1", "dark1", "dark2"
         data: [{
             type: "pie",
-            indexLabel: "{name}: {rate}%",		
+            indexLabel: "{rule}: {rate}%",		
             startAngle: -90,
             dataPoints: rulesCounters
         }]}

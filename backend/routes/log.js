@@ -88,6 +88,7 @@ router.get('/init', async function(req,res){
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15);
     dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3);
+    dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10);
     res.json(dataToFront);
 });
 router.get('/filter', async function(req,res){
@@ -102,6 +103,7 @@ router.get('/filter', async function(req,res){
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     res.json(dataToFront);
 });
 
