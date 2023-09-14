@@ -1,0 +1,251 @@
+/* CustomMultiSelect.css */
+.custom-multi-select {
+    display: inline-block;
+    position: relative;
+  }
+  
+  .selected-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+.selected-option {
+    background-color: #007bff;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+  
+.selected-option button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    margin-left: 4px;
+    font-weight: bold;
+}
+  
+.options-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 100;
+}
+  
+.option-label {
+    display: block;
+    padding: 4px;
+    cursor: pointer;
+}
+  
+.option-label input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.Select-Rules{
+    margin: 10px 4px;
+}
+
+
+  /* MultiSelectDropdown.css */
+.custom-select {
+    width: 100%;
+    overflow: hidden;
+    min-height: 20px; 
+    font-size: 12px; 
+    max-height: 300px;
+    margin-bottom: 10px;
+    padding: 12px;
+}
+  
+
+.Body-Container{
+    
+    width: 65%;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.Charts{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+}
+.Charts h2{
+    width: 50%;
+    height: 150px;
+}
+
+table{
+    text-align: center;
+    width: 50%;
+}
+
+.AllContainer{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    max-height: 1000vh;
+    display: flex;
+    justify-content: flex-end;
+  
+}
+
+
+.container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 20%;
+    height: auto;
+    justify-content: center;
+  
+}
+  
+.search-box {
+    position: relative;
+    display: inline-block;
+    width: 90%;
+    margin-left: 10px;
+}
+.Search-Bar {
+  margin: 10px 4px;
+  min-height: 20px;
+  width: 100%;
+}
+
+.Search-Bar select{
+    width: 90%;
+    padding: 10px;
+    margin: 8px;
+    border: 1px solid blue;
+    border-radius: 10px;
+}
+
+
+.custom-select select{
+    overflow: hidden;
+    height: 40px; /* Adjust the height as needed */
+    font-size: 12px;
+    width: 90%;
+    margin: 8px;
+    border: 1px solid blue;
+    border-radius: 10px;
+}
+
+.input-field {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 60%;
+}
+
+.Select-option{
+    background-color: #f1f1f1;
+    min-width: 160px;
+    width: 90%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.Select-options option{
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+}
+
+.Select-options option:hover{
+    background-color: #ccc;
+}
+
+.search-box:hover .Select-options{
+    display: block;
+}
+
+select, input[type="datetime-local"], button {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 4px;
+    width:90%;
+}
+.DateTime{
+    min-height: 160px;
+    margin: 10px 0px;
+
+}
+.DateTime label,input[type="datetime-local"]{
+    margin: 14px 4px;
+
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    transition: 0.4s ease-in-out;
+}
+
+button:hover{
+      background-color: transparent;
+      color: #007bff;
+      border: 2px solid #007bff;
+}
+
+.rules-options{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.option{
+    padding: 3px;
+    display: flex;
+    flex-direction: row;
+}
+
+
+input[type='submit']{
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    transition: 0.4s ease-in-out;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 4px;
+    width:90%;
+}
+
+input[type='submit']:hover{
+    background-color: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+label{
+    font-family: 'Exo', sans-serif;
+    font-weight: 600;
+}

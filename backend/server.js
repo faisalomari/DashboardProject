@@ -34,9 +34,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 
 
-var log = require('./routes/log');
+var reports = require('./routes/reports');
 
-app.use('/log',log);
+app.use('/reports',reports);
 
 
 app.listen(5000);

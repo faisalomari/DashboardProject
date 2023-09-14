@@ -214,7 +214,6 @@ exports.lastXMessages = function(fileDetails,x,from,to,rules){
   let arr=[];
   fileDetails["process"].map((msg)=>{
     let dateOfMsg=new Date(msg["date"]); 
-    console.log(rulesSet.has(msg["rule"] + " " + from +" " + to +" " + dateOfMsg));
     if(rulesSet.has(msg["rule"]) && dateOfMsg>=from && dateOfMsg<=to){
      
       arr.push({"message":msg["message"],"date":dateOfMsg});

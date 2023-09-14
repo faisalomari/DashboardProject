@@ -5,11 +5,11 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
-function PerXScatter({arr}){
+function PerXScatter({arr,typeName}){
 
-    useEffect(() => {
-        arr.map((ele)=>(ele["x"]=new Date(ele["x"])));
-      }, []);
+    /*useEffect(() => {
+        {arr.map((ele)=>(ele["x"]=new Date(ele["x"])));}
+      }, []);*/
 
       const [chartType, setChartType] = useState("scatter");
 
@@ -25,7 +25,7 @@ function PerXScatter({arr}){
             }
         },
         axisY:{
-            title: "number of occurrences",
+            title: `number of ${typeName}`,
             crosshair: {
                 enabled: true,
                 snapToDataPoint: true
@@ -34,14 +34,14 @@ function PerXScatter({arr}){
         data: [{
             type: chartType,
             markerSize: 15,
-            toolTipContent: "number of occurrences: {y}",
+            toolTipContent: `numner of${typeName}: {y}`,
             dataPoints: arr
         }]
     }
         return (
             <>
              <select onChange={(event) => {
-    setChartType(event.target.value)}}>
+    setChartType(event.target.value)}} style={{ width: '200px', height: '40px' }}>
              <option value="scatter">scatter</option>
              <option value="spline">spline</option>
              </select>

@@ -18,7 +18,7 @@ router.get('/' , async function(req,res){
     res.json({message:error.message , type:"error"});
 }
 });
-router.post('/dashboard', async function(req,res){
+router.post('/getData', async function(req,res){
   let dataFromFront=req.body;
   let result= await logdb.find({ file_name: dataFromFront.file_name}).exec();
     let dataToFront={};
@@ -33,14 +33,13 @@ router.post('/dashboard', async function(req,res){
     dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
-    res.json(dataToFront);
+    res.json({"dataToFront":dataToFront});
 });
 router.get('/:filename',async function(req,res){ 
   var filename = req.params.filename;
   try{
       const specDoc = await logdb.find({file_name:filename}); 
       let myArray = specDoc[0]["process"];
-      console.log(myArray);
       const set = new Set();
       var minDate = (myArray[0]["date"]);
       var maxDate = (myArray[0]["date"]);
