@@ -48,7 +48,7 @@ exports.messagesFilterBaseOnRule = function(fileDetails,from,to,rules){
 
   const arr = Object.keys(rulesCounters).map((name) => ({
     "y": rulesCounters[name],
-    "rule": name,
+    "name": name,
     "rate": ((rulesCounters[name] / fileDetails["process"].length) * 100).toFixed(2) // Calculate rate as a percentage
   }));
 
@@ -69,33 +69,14 @@ exports.messagesFilterBaseOnRank = function(fileDetails,from,to,rules){
     fileDetails["process"].map((data) => (rankCounters[data["rank"]-1] += rulesSet.has(data["rule"]) && data["date"]>=from && data["date"] <=to ? 1 : 0 ));
   }
   let sum=rankCounters[0]+rankCounters[1]+rankCounters[2];
-  return [{"y":rankCounters[0],"rank":"Low","rate":((rankCounters[0]/sum)*100).toFixed(2)}
-  ,{"y":rankCounters[1],"rank":"Medium","rate":((rankCounters[1]/sum)*100).toFixed(2)}
-  ,{"y":rankCounters[2],"rank":"High","rate":((rankCounters[2]/sum)*100).toFixed(2)}];
+  return [{"y":rankCounters[0],"name":"Low","rate":((rankCounters[0]/sum)*100).toFixed(2)}
+  ,{"y":rankCounters[1],"name":"Medium","rate":((rankCounters[1]/sum)*100).toFixed(2)}
+  ,{"y":rankCounters[2],"name":"High","rate":((rankCounters[2]/sum)*100).toFixed(2)}];
 }
 exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
-  let rulesSet;
-  if(rules!=undefined)rulesSet=new Set(rules);
-  if (from === undefined && to === undefined) {
-    let minDate = new Date(fileDetails["process"][0]["date"]);
-    let maxDate = new Date(fileDetails["process"][0]["date"]);
-  
-    for (let i = 1; i < fileDetails["process"].length; i++) {
-      let currDate = new Date(fileDetails["process"][i]["date"]);
-      if (currDate > maxDate) {
-        maxDate = currDate;
-      }
-      if (currDate < minDate) {
-        minDate = currDate;
-      }
-    }
-    from = new Date(Date.parse(minDate));
-    to = new Date(Date.parse(maxDate));
-  }
-  else{
-    from=new Date(Date.parse(from));
-    to=new Date(Date.parse(to));
-  }
+  let rulesSet=new Set(rules);
+  from=convertStringToDate2(from);
+  to=convertStringToDate2(to);
   let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
   minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
   minutesBetweenFromTo=minutesBetweenFromTo/minutes;
@@ -104,7 +85,7 @@ exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
     let dateOfData=Date.parse(new Date(data["date"]));
-    if(rules===undefined || (rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to)){
+    if((rulesSet.has(data["rule"]) && dateOfData>=from && dateOfData<=to)){
       arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
     }
   }
@@ -136,8 +117,8 @@ exports.divideRuleByXMin =function(fileDetails,minutes,rule,from,to){
     to = new Date(Date.parse(maxDate));
   }
   else{
-    from=new Date(Date.parse(from));
-    to=new Date(Date.parse(to));
+    from=new Date((from));
+    to=new Date((to));
   }
   let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
   minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
@@ -183,8 +164,8 @@ exports.divideRankByXMin =function(fileDetails,minutes,rank,from,to,rules){
     to = new Date(Date.parse(maxDate));
   }
   else{
-    from=new Date(Date.parse(from));
-    to=new Date(Date.parse(to));
+    from=new Date((from));
+    to=new Date((to));
   }
   let minutesBetweenFromTo=Math.abs(to-from)/(1000* 60);
   minutesBetweenFromTo=minutesBetweenFromTo/Math.trunc(minutesBetweenFromTo)-1 > 0 ? Math.trunc(minutesBetweenFromTo)+1 : Math.trunc(minutesBetweenFromTo);
@@ -223,20 +204,53 @@ exports.lastXMessages = function(fileDetails,x,from,to,rules){
         minDate = currDate;
       }
     }
-    from = new Date(Date.parse(minDate));
-    to = new Date(Date.parse(maxDate));
+    from = new Date((minDate));
+    to = new Date((maxDate));
   }
   else{
-    from=new Date(Date.parse(from));
-    to=new Date(Date.parse(to));
+    from=new Date((from));
+    to=new Date((to));
   }
   let arr=[];
   fileDetails["process"].map((msg)=>{
     let dateOfMsg=new Date(msg["date"]); 
-    if(rules===undefined || (rulesSet.has(msg["rule"] && dateOfMsg>=from && dateOfMsg<=to))){
+    console.log(rulesSet.has(msg["rule"] + " " + from +" " + to +" " + dateOfMsg));
+    if(rulesSet.has(msg["rule"]) && dateOfMsg>=from && dateOfMsg<=to){
+     
       arr.push({"message":msg["message"],"date":dateOfMsg});
     }
   });
+  
    arr=arr.sort((a, b) => new Date(b.date) - new Date(a.date));
   return arr.slice(0,x);
+}
+let convertStringToDate2 = function(str){
+  str=str+"";
+  var dateString = str;
+  var parts = dateString.split(/[-T:]/);
+  var year = parseInt(parts[0]);
+  var month = parseInt(parts[1]) - 1; // Months are 0-indexed (0-11)
+  var day = parseInt(parts[2]);
+  var hours = parseInt(parts[3]);
+  var minutes = parseInt(parts[4]);
+  var secto = '00';
+  if (parts.length > 5){secto=parts[5].split('.')[0]};
+  var sec = parseInt(secto);
+  var dateObject = new Date(Date.UTC(year, month, day, hours, minutes,sec));
+  return dateObject;
+}
+exports.convertStringToDate = function(str){
+  str=str+"";
+  var dateString = str;
+  var parts = dateString.split(/[-T:]/);
+  var year = parseInt(parts[0]);
+  var month = parseInt(parts[1]) - 1; // Months are 0-indexed (0-11)
+  var day = parseInt(parts[2]);
+  var hours = parseInt(parts[3]);
+  var minutes = parseInt(parts[4]);
+  var secto = '00';
+  if (parts.length > 5){secto=parts[5].split('.')[0]};
+  var sec = parseInt(secto);
+  var dateObject = new Date(Date.UTC(year, month, day, hours, minutes,sec));
+  return dateObject;
 }

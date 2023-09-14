@@ -1,7 +1,7 @@
 import CanvasJSReact from '@canvasjs/react-charts';
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-function PieChart({rulesCounters}){
+function PieChart({arr}){
     
     const options = {
         animationEnabled: true,
@@ -9,9 +9,9 @@ function PieChart({rulesCounters}){
         theme: "dark1", // "light1", "dark1", "dark2"
         data: [{
             type: "pie",
-            indexLabel: "{rule}: {rate}%",		
+            indexLabel: "{name}: {rate}%",		
             startAngle: -90,
-            dataPoints: rulesCounters
+            dataPoints: arr
         }]}
         return (
             <>

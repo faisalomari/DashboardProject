@@ -1,0 +1,61 @@
+/* Reset default styles */
+body, h1, h2, p, table {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Apply a background color and font to the entire page */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  /* Style the table */
+  table {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style the table header row */
+  th {
+    background-color: #333;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  /* Style the table rows alternately for better readability */
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Style table cells (td) */
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Style the "message" column */
+  td:nth-child(1) {
+    font-weight: bold;
+  }
+  
+  /* Style the "date" column */
+  td:nth-child(2) {
+    font-style: italic;
+  }
+  
+  /* Add some spacing between the table cells */
+  td {
+    padding: 10px 15px;
+  }
+  
+  /* Add hover effect to rows for interaction */
+  tr:hover {
+    background-color: #ddd;
+  }
+  

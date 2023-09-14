@@ -4,97 +4,26 @@ var logdb = require('../models/logdb');
 const { log } = require('util');
 const backFuncs=require('../backFuncs');
 
-router.post('/', function(req, res){
-    logdb.insertMany([
-        {file_name: 1 ,  user_name: '1', file_date:'2023-09-02T18:16:07.093Z' ,process : [
-            {
-              rule: 'Application Events',
-              rank: 3,
-              message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T18:00:00.093+00:00'
-            },{
-              rule: 'Error',
-              rank: 3,
-              message: 'FATAL [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T18:15:01.093+00:00'
-            },{
-              rule: 'Error',
-              rank: 2,
-              message: 'EXECPTION [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T18:30:01.093+00:00'
-            },{
-              rule: 'Application Events',
-              rank: 3,
-              message: 'INFO [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T18:45:01.093+00:00'
-            },{
-              rule: 'Error',
-              rank: 2,
-              message: 'warn [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T18:55:01.093+00:00'
-            },{
-              rule: 'Error',
-              rank: 3,
-              message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T19:00:01.093+00:00'
-            }
-          ]},{file_name: 2 ,  user_name: '2', file_date:'2023-09-01T18:16:07.093Z' ,process : [
-            {
-              rule: 'Error',
-              rank: 3,
-              message: 'TRACE [main] org.apache.hadoop.mapreduce.v2.app.MRAppMaster: Created MRApp',
-              date: '2023-09-02T19:10:01.093+00:00'
-            }
-          ]}
-    ]).then(function(){
-        console.log("Data inserted")  // Success
-        res.send("hi");
-    }).catch(function(error){
-        console.log(error)      // Failure
-    });
-});
-
 router.get('/' , async function(req,res){
-    let result =await logdb.find({}).exec();
-    let fileNames=[],dataToFront={},filesRules = new Set();
-
-    result.map((data) => (data["process"].map((data1)=>(filesRules.add(data1["rule"])))));
-    filesRules=Array.from(filesRules);
-
-    result.map((file) => {
-      let rulesIdx="";
-      file["process"].map((msg) => {
-        const ind=filesRules.indexOf(msg["rule"]);
-        if(!rulesIdx.includes(ind)){
-          rulesIdx+=ind;
-        }
-      })
-      fileNames.push({"fileName":file["file_name"],"rules":rulesIdx});
-    });
-
-    dataToFront["files"]=fileNames;
-    dataToFront["rules"]=filesRules;
-    res.json(dataToFront);
+  try{
+    const documents = await logdb.find({});
+    if (documents.length > 0)
+    {
+        const filesname = documents.map(item=>({file_name: item.file_name, file_date:item.file_date}));
+        const sortedfiles = filesname.sort((objA, objB) =>objB.file_date - objA.file_date).map(file=>file.file_name);
+        res.json({message: "Get Data Successed", type: "success", files: sortedfiles});
+    }
+    else{ res.json({message: "No files Uploaded until now", type: "empty", files: []});}
+}catch(error){
+    res.json({message:error.message , type:"error"});
+}
 });
-
-router.get('/init', async function(req,res){
-    let result= await logdb.find().sort({ file_date: -1 }) .exec();
-    let dataToFront={};
-    dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages");
-    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"Error");
-    dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high");
-    dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0]);
-    dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0]);
-    dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15);
-    dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error");
-    dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3);
-    dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10);
-    res.json(dataToFront);
-});
-router.get('/filter', async function(req,res){
+router.post('/dashboard', async function(req,res){
   let dataFromFront=req.body;
   let result= await logdb.find({ file_name: dataFromFront.file_name}).exec();
     let dataToFront={};
+    /*dataFromFront.from=backFuncs.convertStringToDate(result.from);
+    dataFromFront.to=backFuncs.convertStringToDate(result.to);*/
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"Error",dataFromFront.from,dataFromFront.to);
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
@@ -105,6 +34,29 @@ router.get('/filter', async function(req,res){
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     res.json(dataToFront);
+});
+router.get('/:filename',async function(req,res){ 
+  var filename = req.params.filename;
+  try{
+      const specDoc = await logdb.find({file_name:filename}); 
+      let myArray = specDoc[0]["process"];
+      console.log(myArray);
+      const set = new Set();
+      var minDate = (myArray[0]["date"]);
+      var maxDate = (myArray[0]["date"]);
+      for(let i=0; i < myArray.length; i++)
+      {
+          if(myArray[i]["date"] > maxDate){maxDate = myArray[i]["date"];}
+          if(myArray[i]["date"] < minDate){minDate = myArray[i]["date"];}
+          set.add(myArray[i]["rule"]);
+
+      }
+      const setArray = [...set];
+      res.json({message:"Success To Get Data", type:"success", rules:setArray, From: minDate, To:maxDate});
+      
+  }catch(error){
+      res.json({message:"Error to Get Data" , type:"error"});
+  }
 });
 
  module.exports = router;
