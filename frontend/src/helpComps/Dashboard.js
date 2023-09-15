@@ -18,69 +18,68 @@ function Dashboard()
     const rankLine =useRef(null);
     const lastMsgs = useRef(null);
 
-    const handleGeneratePdf = () => {
-          let pdf = new jsPDF({
-            orientation : 'p',
-            unit : 'mm',
-            format : 'a4'
-          });
-          /////////////////////////////////////////////////////////////////////////////////
+    const handleGeneratePdf = () => {let pdf = new jsPDF({
+        orientation : 'p',
+        unit : 'mm',
+        format : 'a4'
+      });
+      /////////////////////////////////////////////////////////////////////////////////
 
-          pdf.setFont('italic','normal');
-          pdf.setFontSize(25);
-          pdf.text(`number of total messages : `, 10, 10);
+      pdf.setFont('italic','normal');
+      pdf.setFontSize(25);
+      pdf.text(`number of total messages : `, 10, 10);
 
-          pdf.setFontSize(22);
-          pdf.setFont('italic','bold');
-          pdf.text(`${dataFromBack["numberOfMessages"]}`, 115, 10); //dataFromBack["numberOfMessages"] dataFromBack["numberOfErrors"]  dataFromBack["numberOfHigh"]
+      pdf.setFontSize(22);
+      pdf.setFont('italic','bold');
+      pdf.text(`${dataFromBack["numberOfMessages"]}`, 115, 10); //dataFromBack["numberOfMessages"] dataFromBack["numberOfErrors"]  dataFromBack["numberOfHigh"]
 
-          /////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////
 
-          pdf.setFont('italic','normal');
-          pdf.setFontSize(25);
-          pdf.text(`number of total Error Detection : `, 10, 25);
+      pdf.setFont('italic','normal');
+      pdf.setFontSize(25);
+      pdf.text(`number of total Error Detection : `, 10, 25);
 
-          pdf.setFontSize(22);
-          pdf.setFont('italic','bold');
-          pdf.text(`${dataFromBack["numberOfErrors"]}`, 140, 25);
+      pdf.setFontSize(22);
+      pdf.setFont('italic','bold');
+      pdf.text(`${dataFromBack["numberOfErrors"]}`, 140, 25);
 
-          /////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////
 
-          pdf.setFont('italic','normal');
-          pdf.setFontSize(25);
-          pdf.text(`number of total High risk Events : `, 10, 40);
+      pdf.setFont('italic','normal');
+      pdf.setFontSize(25);
+      pdf.text(`number of total High risk Events : `, 10, 40);
 
-          pdf.setFontSize(22);
-          pdf.setFont('italic','bold');
-          pdf.text(`${dataFromBack["numberOfHigh"]}`, 145, 40);
+      pdf.setFontSize(22);
+      pdf.setFont('italic','bold');
+      pdf.text(`${dataFromBack["numberOfHigh"]}`, 145, 40);
 
-          /////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////
 
-        html2canvas(rulePie.current).then((rulePieImg) => {
-            pdf.addImage(rulePieImg.toDataURL('image/png'), 'PNG', 10, 50, 100, 75);
+    html2canvas(rulePie.current).then((rulePieImg) => {
+        pdf.addImage(rulePieImg.toDataURL('image/png'), 'PNG', 10, 50, 100, 75);
 
-            html2canvas(rankPie.current).then((rankPieImg) => {
-               pdf.addImage(rankPieImg.toDataURL('image/png'), 'PNG', 100, 50, 100, 75);
+        html2canvas(rankPie.current).then((rankPieImg) => {
+           pdf.addImage(rankPieImg.toDataURL('image/png'), 'PNG', 110, 50, 100, 75);
 
-               html2canvas(msgLine.current).then((msgLineImg) => {
-                pdf.addImage(msgLineImg.toDataURL('image/png'), 'PNG', 10, 130, 200, 150);
-                pdf.addPage();
-                html2canvas(erLine.current).then((erLineImg) => {
-                    pdf.addImage(erLineImg.toDataURL('image/png'), 'PNG', 10, 10, 200, 150);
-                    html2canvas(rankLine.current).then((rankLineImg) => {
-                        pdf.addImage(rankLineImg.toDataURL('image/png'), 'PNG', 10, 150, 200, 150);
-                        pdf.addPage();
-                        html2canvas(document.getElementById('lastMsg')).then((tableImg) => {
-                            pdf.addImage(tableImg.toDataURL('image/png'), 'PNG', 10, 10, 180, 150);
-                            pdf.save('report.pdf'); 
-                        });
+           html2canvas(msgLine.current).then((msgLineImg) => {
+            pdf.addImage(msgLineImg.toDataURL('image/png'), 'PNG', 10, 130, 200, 150);
+            pdf.addPage();
+            html2canvas(erLine.current).then((erLineImg) => {
+                pdf.addImage(erLineImg.toDataURL('image/png'), 'PNG', 10, 10, 200, 150);
+                html2canvas(rankLine.current).then((rankLineImg) => {
+                    pdf.addImage(rankLineImg.toDataURL('image/png'), 'PNG', 10, 150, 200, 150);
+                    pdf.addPage();
+                    html2canvas(document.getElementById('lastMsg')).then((tableImg) => {
+                        pdf.addImage(tableImg.toDataURL('image/png'), 'PNG', 10, 10, 180, 150);
+                        pdf.save('report.pdf'); 
                     });
                 });
-               });
-               
             });
+           });
+           
         });
-        };
+    });
+        };
        
     /*This Object will send To BackEnd.
         When The Page uploaded this obj will contain => {file_name: last file uploaded to the system, rules:[all rules], 
