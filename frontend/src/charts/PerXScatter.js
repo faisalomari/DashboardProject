@@ -6,11 +6,6 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
 function PerXScatter({arr,typeName}){
-
-    /*useEffect(() => {
-        {arr.map((ele)=>(ele["x"]=new Date(ele["x"])));}
-      }, []);*/
-
       const [chartType, setChartType] = useState("scatter");
 
       const options = {
@@ -30,6 +25,9 @@ function PerXScatter({arr,typeName}){
                 enabled: true,
                 snapToDataPoint: true
             }
+        },
+        title:{
+            text: typeName+" occurrences"
         },
         data: [{
             type: chartType,

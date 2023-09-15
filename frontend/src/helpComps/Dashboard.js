@@ -234,9 +234,10 @@ function Dashboard()
             });
             console.log(fileObj);
             const jsonData = await response.json();
-            jsonData["dataToFront"]["divideMessagesBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
-            jsonData["dataToFront"]["divideErrorsBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
-            jsonData["dataToFront"]["divideRankBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
+            console.log(jsonData["dataToFront"]["divideMessagesBy15Min"]);
+            if(jsonData["dataToFront"]["divideMessagesBy15Min"]!==undefined)jsonData["dataToFront"]["divideMessagesBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
+            if(jsonData["dataToFront"]["divideErrorsBy15Min"]!==undefined)jsonData["dataToFront"]["divideErrorsBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
+            if(jsonData["dataToFront"]["divideRankBy15Min"]!==undefined)jsonData["dataToFront"]["divideRankBy15Min"].map((ele)=>(ele["x"]=new Date(ele["x"])));
             setDataFromBack(await jsonData["dataToFront"]);
             console.log(dataFromBack);
         }catch(err) {
@@ -257,17 +258,18 @@ function Dashboard()
       </div>
       <div className="chart-row">
         {/* Render your charts here */}
-        <div className="chart">{<PieChart arr={dataFromBack["rulesCounters"]}/>}</div>
-        <div className="chart">{<PieChart arr={dataFromBack["rankCounters"]}/>}</div>
+        <div className="chart">{<PieChart arr={dataFromBack["rulesCounters"]} titleName={"rules"}/>}</div>
+        <div className="chart">{<PieChart arr={dataFromBack["rankCounters"]} titleName={"ranks"}/> }</div>
       </div>
-      <div className="chart-row">
-        {/* Render your charts here */}
-        <div className="chart"><PerXScatter arr={dataFromBack["divideMessagesBy15Min"]} typeName={"messages"}/></div>
-        <div className="chart"><PerXScatter arr={dataFromBack["divideErrorsBy15Min"]} typeName={"Errors"}/></div>
-        <div className="chart"><PerXScatter arr={dataFromBack["divideRankBy15Min"]} typeName={"High risk"}/></div>
-      </div>
+      
+        {}
+        <div className="chart-row"><div className="chart"><PerXScatter arr={dataFromBack["divideMessagesBy15Min"]} typeName={"messages"} /></div></div>
+        <div className="chart-row"><div className="chart"><PerXScatter arr={dataFromBack["divideErrorsBy15Min"]} typeName={"Errors"} /></div></div>
+        <div className="chart-row"><div className="chart"><PerXScatter arr={dataFromBack["divideRankBy15Min"]} typeName={"High risk"}/></div></div>
+        
       <div className="chart-row">
         <div className="chart">
+            {dataFromBack["lastXMessages"]===undefined  ? <h1>nothing</h1> : 
             <table>
                 <tr>
                     <th>message</th>
@@ -278,7 +280,7 @@ function Dashboard()
                     <td>{msg["message"]}</td>
                     <td>{msg["date"]}</td>
                 </tr>)}
-            </table>
+            </table>}
         </div>
       </div>
     </div>

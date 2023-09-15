@@ -12,9 +12,9 @@ exports.numbersFunc = function (fileDetails,type,from,to,rules){
           return fileDetails["process"].reduce((total,current)=>(total+=(current["date"] >=from && current["date"]<=to && rulesSet.has(current["rule"])) ? 1 : 0 ),0);
         }
       }
-      case  "Error":{
+      case  "error":{
         if(from===undefined && to===undefined){
-          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error") ? 1 : 0)),0);
+          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"].toLowerCase()==="Error") ? 1 : 0)),0);
         }
         else{
           return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error" && current["date"]>=from && current["date"]<=to) ? 1 : 0)),0);
@@ -100,6 +100,7 @@ exports.divideMessagesByXMin =function(fileDetails,minutes,from,to,rules){
 }
 
 exports.divideRuleByXMin =function(fileDetails,minutes,rule,from,to){
+  rule=rule.toLowerCase();
   if (from === undefined && to === undefined) {
     let minDate = new Date(fileDetails["process"][0]["date"]);
     let maxDate = new Date(fileDetails["process"][0]["date"]);
@@ -129,7 +130,7 @@ exports.divideRuleByXMin =function(fileDetails,minutes,rule,from,to){
   for(let i=0;i<fileDetails["process"].length;i++){
     let data=fileDetails["process"][i];
     let dateOfData=Date.parse(new Date(data["date"]));
-    if(data["rule"]===rule && dateOfData>=from && dateOfData<=to){
+    if(data["rule"].toLowerCase()===rule && dateOfData>=from && dateOfData<=to){
       arr[Math.trunc(((Date.parse(data["date"])-from)/(1000* 60))/minutes)]++;
     }
   }

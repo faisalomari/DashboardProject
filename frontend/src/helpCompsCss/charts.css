@@ -25,8 +25,8 @@
   
   .chart {
     flex: 1;
-    background-color: lightblue;
+    /*background-color: lightblue;*/
     padding: 20px;
-    border: 1px solid blue;
+   /* border: 1px solid blue;*/
     margin: 5px; /* Adjust the margin between charts as needed */
   }
