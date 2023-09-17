@@ -22,8 +22,6 @@ router.post('/getData', async function(req,res){
   let dataFromFront=req.body;
   let result= await logdb.find({ file_name: dataFromFront.file_name}).exec();
     let dataToFront={};
-    /*dataFromFront.from=backFuncs.convertStringToDate(result.from);
-    dataFromFront.to=backFuncs.convertStringToDate(result.to);*/
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error",dataFromFront.from,dataFromFront.to);
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
@@ -32,7 +30,7 @@ router.post('/getData', async function(req,res){
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"error");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
-    dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],10,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],5,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     res.json({"dataToFront":dataToFront});
 });
 router.get('/:filename',async function(req,res){ 
