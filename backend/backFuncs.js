@@ -52,12 +52,10 @@ exports.messagesFilterBaseOnRule = function(fileDetails,from,to,rules){
 
   const arr = Object.keys(rulesCounters).map((name) => ({
     "y": rulesCounters[name],
-    "name": name,
+    "name": name.split(" ")[0],
     "rate": ((rulesCounters[name] / fileDetails["process"].length) * 100).toFixed(2) // Calculate rate as a percentage
   }));
-
   arr.sort((a, b) => b.y - a.y);
-
   return arr;
 
 }
