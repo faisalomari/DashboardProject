@@ -324,28 +324,28 @@ function Dashboard()
             <div className="chart-container">
       <div className="variables">
         {/* Render your variables here */}
-        <div className="variable"  >number of total messages : {dataFromBack["numberOfMessages"]} </div>
-        <div className="variable"  >number of total Error Detection : {dataFromBack["numberOfErrors"]}</div>
-        <div className="variable"  >number of total High risk Events : {dataFromBack["numberOfHigh"]}</div>
+        <div className="variable"  ><label>Total Messages : {dataFromBack["numberOfMessages"]} </label></div>
+        <div className="variable"  ><label>Total Errors : {dataFromBack["numberOfErrors"]}</label></div>
+        <div className="variable"  ><label>Total High Risk Events : {dataFromBack["numberOfHigh"]}</label></div>
       </div>
       <div className="chart-row">
         {/* Render your charts here */}
-        <div className="chart"  ref={rulePie}>{<PieChart arr={dataFromBack["rulesCounters"]} titleName={"rules"}/>}</div>
-        <div className="chart"  ref={rankPie}>{<PieChart arr={dataFromBack["rankCounters"]} titleName={"ranks"}/> }</div>
+        <div className="chart"  ref={rulePie}>{<PieChart arr={dataFromBack["rulesCounters"]} titleName={"Rules"}/>}</div>
+        <div className="chart"  ref={rankPie}>{<PieChart arr={dataFromBack["rankCounters"]} titleName={"Ranks"}/> }</div>
       </div>
       
         {}
-        <div className="chart-row"><div className="chart" ref={msgLine} ><PerXScatter arr={dataFromBack["divideMessagesBy15Min"]} typeName={"messages"} /></div></div>
+        <div className="chart-row"><div className="chart" ref={msgLine} ><PerXScatter arr={dataFromBack["divideMessagesBy15Min"]} typeName={"Messages"} /></div></div>
         <div className="chart-row"><div className="chart" ref={erLine}><PerXScatter arr={dataFromBack["divideErrorsBy15Min"]} typeName={"Errors"} /></div></div>
         <div className="chart-row"><div className="chart" ref={rankLine}><PerXScatter arr={dataFromBack["divideRankBy15Min"]} typeName={"High risk"}/></div></div>
         
       <div className="chart-row">
         <div className="chart">
-            {dataFromBack["lastXMessages"]===undefined  ? <h1>nothing</h1> : 
+            {dataFromBack["lastXMessages"]===undefined  ? <h1>No Data</h1> : 
             <table id="lastMsg">
                 <tr>
-                    <th>message</th>
-                    <th>date</th>
+                    <th>Message</th>
+                    <th>Date</th>
                 </tr>
                 {dataFromBack["lastXMessages"].map((msg)=> 
                 <tr>
@@ -358,7 +358,7 @@ function Dashboard()
 
       <div className="chart-row">
         <div className="chart">
-            {dataFromBack["lastXMessages"]===undefined  ? <h1>nothing</h1> : 
+            {dataFromBack["lastXMessages"]===undefined  ? <h1>No Data</h1> : 
             <table id="lastMsg">
                 <tr>
                     <th>Next Event No.</th>

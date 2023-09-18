@@ -1,8 +1,10 @@
 .chart-container {
     display: flex;
+    padding: 10px;
     flex-direction: column;
     align-items: center;
-    gap: 10px; /* Adjust the gap between elements as needed */
+    gap: 50px; /* Adjust the gap between elements as needed */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
   .variables {
@@ -12,9 +14,10 @@
   }
   
   .variable {
-    background-color: lightgray;
     padding: 10px;
-    border: 1px solid gray;
+  }
+  .variable label{
+    font-size: 16px;
   }
   
   .chart-row {
@@ -25,8 +28,11 @@
   
   .chart {
     flex: 1;
-    /*background-color: lightblue;*/
     padding: 20px;
-   /* border: 1px solid blue;*/
-    margin: 5px; /* Adjust the margin between charts as needed */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 5px;
+    background-color: #f0f0f0;
+  }
+  .ChartH{
+    text-align: center;
   }

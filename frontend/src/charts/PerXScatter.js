@@ -13,38 +13,40 @@ function PerXScatter({arr,typeName}){
         animationEnabled: true,
         zoomEnabled: true,
         axisX: {
-            title:"the time",
+            title:"Period",
             crosshair: {
                 enabled: true,
                 snapToDataPoint: true
             }
         },
         axisY:{
-            title: `number of ${typeName}`,
+            title: `Count Of ${typeName}`,
             crosshair: {
                 enabled: true,
                 snapToDataPoint: true
             }
         },
         title:{
-            text: typeName+" occurrences"
+            text: typeName+" Occurrences"
         },
         data: [{
             type: chartType,
             markerSize: 15,
-            toolTipContent: `numner of${typeName}: {y}`,
+            toolTipContent: `Count Of${typeName}: {y}`,
             dataPoints: arr
         }]
     }
         return (
             <>
+            <div style={{textAlign : 'center' , boxShadow: '0,0,30px rgba(0,0,0,0.9)'}}>
              <select onChange={(event) => {
-    setChartType(event.target.value)}} style={{ width: '200px', height: '40px' }}>
-             <option value="scatter">scatter</option>
-             <option value="spline">spline</option>
+    setChartType(event.target.value)}} style={{ width: '200px', height: '40px',margin:'8px' }}>
+             <option value="scatter">Scatter</option>
+             <option value="spline">Spline</option>
              </select>
             <div>
                 {<CanvasJSChart options = {options} />}
+            </div>
             </div>
             </>
             );
