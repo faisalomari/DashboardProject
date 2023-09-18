@@ -355,6 +355,39 @@ function Dashboard()
             </table>}
         </div>
       </div>
+
+      <div className="chart-row">
+        <div className="chart">
+            {dataFromBack["lastXMessages"]===undefined  ? <h1>nothing</h1> : 
+            <table id="lastMsg">
+                <tr>
+                    <th>Next Event No.</th>
+                    <th>Rule</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Rufdsfdsle</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Rufdsfdsle</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Rufdsfdsle</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Rufdsfdsle</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Rufdsfdsle</td>
+                </tr>
+            </table>}
+        </div>
+      </div>
+
     </div>
             </div>
             <div className="container">

@@ -1,4 +1,8 @@
 const { object } = require("webidl-conversions");
+const fs = require('fs');
+const tf = require('@tensorflow/tfjs-node');
+const fetch = require('node-fetch');
+
 
 exports.numbersFunc = function (fileDetails,type,from,to,rules){
     let rulesSet=undefined;
@@ -12,12 +16,12 @@ exports.numbersFunc = function (fileDetails,type,from,to,rules){
           return fileDetails["process"].reduce((total,current)=>(total+=(current["date"] >=from && current["date"]<=to && rulesSet.has(current["rule"])) ? 1 : 0 ),0);
         }
       }
-      case  "error":{
+      case  "Error Detection":{
         if(from===undefined && to===undefined){
-          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"].toLowerCase()==="Error") ? 1 : 0)),0);
+          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error Detection") ? 1 : 0)),0);
         }
         else{
-          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error" && current["date"]>=from && current["date"]<=to) ? 1 : 0)),0);
+          return fileDetails["process"].reduce((total,current)=>(total+= ((current["rule"]==="Error Detection" && current["date"]>=from && current["date"]<=to) ? 1 : 0)),0);
         }
       }
       case "high":{
@@ -254,3 +258,63 @@ exports.convertStringToDate = function(str){
   var dateObject = new Date(Date.UTC(year, month, day, hours, minutes,sec));
   return dateObject;
 }
+module.exports.predictNextEvents = async function predictNextEvents(previousEvents, numEventsToPredict) {
+  const model = await tf.loadLayersModel('file://tfjs_model/model.json');
+  const predictedEvents = [];
+  
+  // Encode the previous events
+  const eventRulesMapping = {
+    "Error Detection": 0,
+    "Warning Identification": 1,
+    "Authentication Issue": 2,
+    "Network Anomalies": 3,
+    "Performance Bottlenecks": 4,
+    "Security Breach Attempt": 5,
+    "Resource Monitoring": 6,
+    "Successful Transactions": 7,
+    "Application Events": 8,
+    "Informational Logs": 9,
+    "Unauthorized Access": 10,
+    "Anomaly Detection": 11,
+    "Malicious Activity": 12,
+    "Resource Exceedance": 13,
+    "Latency Threshold": 14,
+    "Outages and Downtime": 15,
+    "Critical Errors": 16,
+    "Regulatory Compliance": 17,
+    "Data Privacy": 18,
+    "Network Connectivity": 19,
+    "Hardware Failure": 20,
+    "Unknown": 21
+  };
+  
+  const encodedPreviousEvents = previousEvents.map(event => {
+    if (event.rule in eventRulesMapping) {
+      return eventRulesMapping[event.rule];
+    } else {
+      return 21; // Assign 25 if the rule is not in the map
+    }
+  });
+
+  // Step 1: Pad encodedPreviousEvents if it's shorter than 200
+  while (encodedPreviousEvents.length < 200) {
+    encodedPreviousEvents.push(21); // Padding with 25
+  }
+  
+  for (let i = 0; i < numEventsToPredict; i++) {
+    // Predict the next event
+    const predictedProbabilities = model.predict(tf.tensor2d([encodedPreviousEvents], [1, encodedPreviousEvents.length]));
+    const predictedEventIndex = predictedProbabilities.argMax(1).dataSync()[0];
+    const predictedEventRule = Object.keys(eventRulesMapping).find(key => eventRulesMapping[key] === predictedEventIndex);
+  
+    // Add the predicted event rule to the result
+    predictedEvents.push(predictedEventRule);
+  
+    // Update the list of previous events for the next prediction
+    encodedPreviousEvents.shift();
+    encodedPreviousEvents.push(predictedEventIndex);
+  }  
+  
+  return predictedEvents;
+  }
+// Define the function to predict the next events

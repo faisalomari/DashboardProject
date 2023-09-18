@@ -3,6 +3,10 @@ var router = express.Router();
 var logdb = require('../models/logdb');
 const { log } = require('util');
 const backFuncs=require('../backFuncs');
+const fs = require('fs');
+const tf = require('@tensorflow/tfjs-node');
+const fetch = require('node-fetch');
+
 
 router.get('/' , async function(req,res){
   try{
@@ -23,14 +27,15 @@ router.post('/getData', async function(req,res){
   let result= await logdb.find({ file_name: dataFromFront.file_name}).exec();
     let dataToFront={};
     dataToFront["numberOfMessages"]=backFuncs.numbersFunc(result[0],"messages",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
-    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"error",dataFromFront.from,dataFromFront.to);
+    dataToFront["numberOfErrors"]=backFuncs.numbersFunc(result[0],"Error Detection",dataFromFront.from,dataFromFront.to);
     dataToFront["numberOfHigh"]=backFuncs.numbersFunc(result[0],"high",dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["rulesCounters"]=backFuncs.messagesFilterBaseOnRule(result[0],dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["rankCounters"]=backFuncs.messagesFilterBaseOnRank(result[0],dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["divideMessagesBy15Min"]=backFuncs.divideMessagesByXMin(result[0],15,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
-    dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"error");
+    dataToFront["divideErrorsBy15Min"]=backFuncs.divideRuleByXMin(result[0],15,"Error Detection");
     dataToFront["divideRankBy15Min"]=backFuncs.divideRankByXMin(result[0],15,3,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
     dataToFront["lastXMessages"]=backFuncs.lastXMessages(result[0],5,dataFromFront.from,dataFromFront.to,dataFromFront.rules);
+    //sdataToFront["predictions"]=backFuncs.predictNextEvents(result[0]["process"],5);
     res.json({"dataToFront":dataToFront});
 });
 router.get('/:filename',async function(req,res){ 
@@ -55,5 +60,4 @@ router.get('/:filename',async function(req,res){
       res.json({message:"Error to Get Data" , type:"error"});
   }
 });
-
  module.exports = router;
