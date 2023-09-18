@@ -104,7 +104,7 @@ function Dashboard() {
     const [dataFromBack, setDataFromBack] = useState([]);
     const getFilenames = async () => {
         try {
-            const response = await fetch("http://localhost:8000/reports/")
+            const response = await fetch("http://localhost:5000/reports/")
             const jsonData = await response.json();
             if (jsonData.type === 'empty') { setFilesAppear(true); }
             if (jsonData.type === 'success') {
@@ -131,7 +131,7 @@ function Dashboard() {
     const [first, setFirst] = useState(false);
     const getRulesAndDates = async () => {
         try {
-            const response = await fetch("http://localhost:8000/reports/" + fileObj.file_name);
+            const response = await fetch("http://localhost:5000/reports/" + fileObj.file_name);
             const jsonData = await response.json();
             if (jsonData.type === 'success') {
                 setFileObj((state) => {
@@ -291,7 +291,7 @@ function Dashboard() {
 
     const postHandlingData = async () => {
         try {
-            const response = await fetch("http://localhost:8000/reports/getData", {
+            const response = await fetch("http://localhost:5000/reports/getData", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', },
                 body: JSON.stringify(fileObj)
@@ -303,6 +303,7 @@ function Dashboard() {
             if (jsonData["dataToFront"]["divideErrorsBy15Min"] !== undefined) jsonData["dataToFront"]["divideErrorsBy15Min"].map((ele) => (ele["x"] = new Date(ele["x"])));
             if (jsonData["dataToFront"]["divideRankBy15Min"] !== undefined) jsonData["dataToFront"]["divideRankBy15Min"].map((ele) => (ele["x"] = new Date(ele["x"])));
             setDataFromBack(await jsonData["dataToFront"]);
+            console.log(await jsonData["dataToFront"]);
         } catch (err) {
             console.error(err.message);
         }
@@ -357,23 +358,23 @@ function Dashboard() {
                                         </tr>
                                         <tr>
                                             <td>1</td>
-                                            <td>{dataFromBack["predictions"][0]}</td>
+                                            <td>{dataFromBack["predictions"]!==undefined ? dataFromBack["predictions"][0] : "NONE"}</td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
-                                            <td>{dataFromBack["predictions"][1]}</td>
+                                            <td>{dataFromBack["predictions"]!==undefined ? dataFromBack["predictions"][1] : "NONE"}</td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
-                                            <td>{dataFromBack["predictions"][2]}</td>
+                                            <td>{dataFromBack["predictions"]!==undefined ? dataFromBack["predictions"][2] : "NONE"}</td>
                                         </tr>
                                         <tr>
                                             <td>4</td>
-                                            <td>{dataFromBack["predictions"][3]}</td>
+                                            <td>{dataFromBack["predictions"]!==undefined ? dataFromBack["predictions"][3] : "NONE"}</td>
                                         </tr>
                                         <tr>
                                             <td>5</td>
-                                            <td>{dataFromBack["predictions"][4]}</td>
+                                            <td>{dataFromBack["predictions"]!==undefined ? dataFromBack["predictions"][4] : "NONE"}</td>
                                         </tr>
                                     </table>}
                             </div>
