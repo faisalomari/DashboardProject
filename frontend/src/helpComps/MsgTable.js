@@ -1,19 +1,20 @@
 import "../helpCompsCss/msgTable.css"
-function MsgTable({msgs}){
-    return(
+import React from 'react';
+function MsgTable({ msgs }) {
+    return (
         <>
-        <table>
-            <tr>
-                <th>message</th>
-                <th>date</th>
-            </tr>
-            {msgs.map((msg)=> 
+            <table>
                 <tr>
-                    <td>{msg["message"]}</td>
-                    <td>{msg["date"]}</td>
+                    <th>message</th>
+                    <th>date</th>
                 </tr>
-            )}
-        </table>
+                {msgs.map((msg) =>
+                    <tr>
+                        <td>{msg["message"]}</td>
+                        <td>{msg["date"]}</td>
+                    </tr>
+                )}
+            </table>
         </>
     );
 }
